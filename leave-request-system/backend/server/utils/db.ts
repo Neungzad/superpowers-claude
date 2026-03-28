@@ -1,8 +1,6 @@
 // leave-request-system/backend/server/utils/db.ts
 import { Pool } from "pg";
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-
-export default pool;
