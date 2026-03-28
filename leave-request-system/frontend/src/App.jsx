@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { me } from "./api/auth.js";
-
-// Pages will be added in Task 10
-function PlaceholderPage({ name }) {
-  return <div style={{ padding: 24 }}>{name} page — coming soon</div>;
-}
+import LoginPage from "./pages/LoginPage.jsx";
+import DashboardPage from "./pages/DashboardPage.jsx";
+import ManagerPage from "./pages/ManagerPage.jsx";
 
 export default function App() {
   const [user, setUser] = useState(undefined);
@@ -31,7 +29,7 @@ export default function App() {
             user ? (
               <Navigate to="/dashboard" replace />
             ) : (
-              <PlaceholderPage name="Login" />
+              <LoginPage onLogin={setUser} />
             )
           }
         />
@@ -39,7 +37,7 @@ export default function App() {
           path="/dashboard"
           element={
             user ? (
-              <PlaceholderPage name="Dashboard" />
+              <DashboardPage user={user} onLogout={() => setUser(null)} />
             ) : (
               <Navigate to="/login" replace />
             )
@@ -49,7 +47,7 @@ export default function App() {
           path="/manager"
           element={
             user?.role === "manager" ? (
-              <PlaceholderPage name="Manager" />
+              <ManagerPage user={user} onLogout={() => setUser(null)} />
             ) : (
               <Navigate to="/dashboard" replace />
             )
