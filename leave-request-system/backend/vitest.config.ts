@@ -1,7 +1,7 @@
 // leave-request-system/backend/vitest.config.ts
-import { defineVitestConfig } from "@nuxt/test-utils/config";
+import { defineConfig } from "vitest/config";
 
-export default defineVitestConfig({
+export default defineConfig({
   test: {
     testTimeout: 30_000,
     hookTimeout: 60_000,
