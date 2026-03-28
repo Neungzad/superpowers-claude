@@ -2,7 +2,8 @@ async function request(url, options = {}) {
   const res = await fetch(url, { credentials: "include", ...options });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    const err = new Error(body.error || body.statusMessage || "Request failed");
+    const msg = (typeof body.error === 'string' && body.error) || body.message || body.statusMessage || "Request failed";
+    const err = new Error(msg);
     err.status = res.status;
     throw err;
   }
