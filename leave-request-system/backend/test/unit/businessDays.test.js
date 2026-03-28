@@ -20,7 +20,7 @@ describe("countBusinessDays", () => {
     ).toBe(2);
   });
 
-  it("Mon to Mon spanning two weekends = 8", () => {
+  it("Mon to Mon spanning two weekends = 11", () => {
     expect(
       countBusinessDays(new Date("2025-06-02"), new Date("2025-06-16")),
     ).toBe(11);
