@@ -11,8 +11,11 @@ export interface SessionUser {
 
 export async function getSession(event: H3Event) {
   return useSession<SessionUser>(event, {
-    password:
-      process.env.SESSION_SECRET || "insecure-default-change-in-production",
+    password: (() => {
+      const secret = process.env.SESSION_SECRET;
+      if (!secret) throw new Error("SESSION_SECRET environment variable is not set");
+      return secret;
+    })(),
     name: "session",
     maxAge: 60 * 60 * 24, // 24 hours
   });

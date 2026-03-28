@@ -3,6 +3,10 @@ import bcrypt from "bcryptjs";
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
 
+  if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
+    throw createError({ statusCode: 400, statusMessage: "email and password are required" });
+  }
+
   const result = await pool.query(
     "SELECT id, name, email, role, password FROM users WHERE email = $1",
     [email],
