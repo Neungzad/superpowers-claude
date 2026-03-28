@@ -1,24 +1,50 @@
+# leave-request-system/Makefile
 -include .env
 export
 
 .PHONY: dev migrate seed test test-e2e db-reset build
 
+# Start Docker DB + frontend + backend dev servers concurrently
 dev:
-	@echo "TODO: implement in Task 12"
+	docker-compose up -d
+	npx --yes concurrently \
+		--names "backend,frontend" \
+		--prefix-colors "blue,green" \
+		"cd backend && DATABASE_URL=$(DATABASE_URL) SESSION_SECRET=$(SESSION_SECRET) npm run dev" \
+		"cd frontend && npm run dev"
 
+# Run Flyway migrations via Docker (no local Java needed)
 migrate:
-	@echo "TODO: implement in Task 12"
+	docker run --rm \
+		--network host \
+		-e FLYWAY_URL=jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB) \
+		-e FLYWAY_USER=$(POSTGRES_USER) \
+		-e FLYWAY_PASSWORD=$(POSTGRES_PASSWORD) \
+		-v $(PWD)/db/migrations:/flyway/sql \
+		flyway/flyway migrate
 
+# Seed is just migrate (V99 is a migration; Flyway skips if already applied)
 seed: migrate
 
+# Run all backend unit + integration tests
 test:
-	@echo "TODO: implement in Task 12"
+	docker-compose up -d
+	cd backend && \
+		DATABASE_URL=$(DATABASE_URL) \
+		SESSION_SECRET=$(SESSION_SECRET) \
+		npx vitest run
 
+# Run Playwright E2E tests (requires dev servers running)
 test-e2e:
-	@echo "TODO: implement in Task 12"
+	cd frontend && npx playwright test
 
+# Drop and recreate DB, then re-run all migrations
 db-reset:
-	@echo "TODO: implement in Task 12"
+	docker-compose down -v
+	docker-compose up -d
+	sleep 3
+	$(MAKE) migrate
 
+# Build frontend for production
 build:
-	@echo "TODO: implement in Task 12"
+	cd frontend && npm run build
