@@ -2,7 +2,7 @@
 -include .env
 export
 
-.PHONY: dev migrate seed test test-e2e db-reset build
+.PHONY: dev migrate seed test test-e2e test-e2e-ui db-reset build
 
 # Start Docker DB + frontend + backend dev servers concurrently
 dev:
@@ -37,6 +37,9 @@ test:
 # Run Playwright E2E tests (requires dev servers running)
 test-e2e:
 	cd frontend && npx playwright test
+
+test-e2e-ui:
+	cd frontend && npx playwright test --ui
 
 # Drop and recreate DB, then re-run all migrations
 db-reset:
