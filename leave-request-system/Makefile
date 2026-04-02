@@ -2,7 +2,12 @@
 -include .env
 export
 
-.PHONY: dev migrate seed test test-e2e test-e2e-ui db-reset build
+.PHONY: install dev migrate seed test test-e2e test-e2e-ui db-reset build
+
+# Install all dependencies for frontend and backend
+install:
+	cd backend && npm install
+	cd frontend && npm install
 
 # Start Docker DB + frontend + backend dev servers concurrently
 dev:
